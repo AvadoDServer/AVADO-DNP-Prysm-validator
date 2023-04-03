@@ -1,24 +1,19 @@
-#!/bin/sh
+#!/bin/bash
 
-echo "Start nginx"
-
-nginx
-
-echo "Generating auth token"
 mkdir -p "/root/.eth2validators"
 
-# remove old token if it's there
-rm -f /root/.eth2validators/auth-token
+# sleep infinity
 
-# generate new token
-validator web generate-auth-token --wallet-dir=/root/.eth2validators --accept-terms-of-use
+if [ ! -f "/root/.eth2validators/walletpassword.txt" ]; then
+  echo "Create wallet"
+  openssl rand -hex 12 | tr -d "\n" > /root/.eth2validators/walletpassword.txt
+  chmod 0600 /root/.eth2validators/walletpassword.txt
+  ls -als /root/.eth2validators/walletpassword.txt
+  /bin/validator wallet create --wallet-dir=/root/.eth2validators --keymanager-kind=imported --wallet-password-file=/root/.eth2validators/walletpassword.txt --accept-terms-of-use
+fi
 
-# remove old token if it's there
-rm -f /usr/share/nginx/wizard/auth-token.txt
-
-# copy new token to wizard for authentication link
-cat /root/.eth2validators/auth-token | tail -1 >/usr/share/nginx/wizard/auth-token.txt
-chmod 644 /usr/share/nginx/wizard/auth-token.txt
+#check
+/bin/validator accounts list  --wallet-dir=/root/.eth2validators --wallet-password-file=/root/.eth2validators/walletpassword.txt
 
 SETTINGSFILE=/root/settings.json
 
@@ -70,7 +65,7 @@ exec /bin/validator \
   --grpc-gateway-host="0.0.0.0" \
   --monitoring-host="0.0.0.0" \
   --wallet-dir="/root/.eth2validators" \
-  --web \
+  --wallet-password-file=/root/.eth2validators/walletpassword.txt \
   --rpc \
   --grpc-gateway-host="0.0.0.0" \
   --grpc-gateway-port=7500 \

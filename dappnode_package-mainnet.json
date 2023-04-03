@@ -20,8 +20,5 @@
   "license": "(c)",
   "dependencies": {
     "prysm-beacon-chain-mainnet.avado.dnp.dappnode.eth": ""
-  },
-  "links": {
-    "OnboardingWizard": "http://eth2validator.my.ava.do:81"
   }
 }
