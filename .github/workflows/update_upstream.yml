@@ -60,7 +60,7 @@ jobs:
             
             ### Release Notes
             See the upstream release notes at: https://github.com/OffchainLabs/prysm/releases/tag/${{ steps.update.outputs.new_upstream }}
-            
+            cc @flisko
             ---
             *This PR was automatically created by the update-upstream workflow.*
           labels: |
