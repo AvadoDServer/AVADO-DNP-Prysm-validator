@@ -1,1 +1,17 @@
-./build/docker-compose.yml
+version: '3.4'
+services:
+  eth2validator.avado.dnp.dappnode.eth:
+    image: 'eth2validator.avado.dnp.dappnode.eth:0.0.78'
+    build:
+      context: ./build
+      args:
+        VERSION: v7.1.3
+    environment:
+      - EXTRA_OPTS=
+    volumes:
+      - 'data:/root'
+    ports:
+      - '7500:7500'
+      - '81:81'
+volumes:
+  data: {}
