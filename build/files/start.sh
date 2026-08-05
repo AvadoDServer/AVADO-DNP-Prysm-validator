@@ -53,6 +53,12 @@ fi
 
 echo "Starting validator"
 
+# NOTE: do not pass --beacon-rest-api-provider below. Since Prysm v7.1.8 merely setting
+# that flag implicitly enables the beacon REST API, which switches the validator client
+# off gRPC with no fallback. If REST is ever wanted, the value must include the scheme
+# (http://prysm-beacon-chain-${NETWORK}.my.ava.do:3500), otherwise every beacon API call
+# fails with "unsupported protocol scheme".
+
 set -u
 set -o errexit
 
@@ -83,7 +89,6 @@ exec /bin/validator \
   --graffiti="${GRAFFITI}" \
   ${PROPOSER_SETTINGS_FILE:+--proposer-settings-file=${PROPOSER_SETTINGS_FILE}} \
   --beacon-rpc-provider=prysm-beacon-chain-${NETWORK}.my.ava.do:4000 \
-  --beacon-rest-api-provider=prysm-beacon-chain-${NETWORK}.my.ava.do:3500 \
   ${VALIDATORS_PROPOSER_DEFAULT_FEE_RECIPIENT:+--suggested-fee-recipient=${VALIDATORS_PROPOSER_DEFAULT_FEE_RECIPIENT}} \
   ${MEV_BOOST_ENABLED:+--enable-builder} \
   ${EXTRA_OPTS}
