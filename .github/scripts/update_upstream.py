@@ -157,10 +157,26 @@ def update_docker_compose(file_path: str, new_version: str, new_upstream: str) -
 def main():
     """Main function to check and update Prysm versions."""
     
-    # Paths to files
-    package_file = "dappnode_package.json"
-    compose_file = "build/docker-compose.yml"
-    
+    # Every file that carries the package version or the upstream version must
+    # move together:
+    #   - dappnode_package.json          the published manifest (canonical: current versions are read from it)
+    #   - docker-compose.yml             what the release action publishes; the build arg here is what
+    #                                    actually gets built, so skipping it ships a different client
+    #                                    than the manifest advertises
+    #   - build/docker-compose.yml       the build source
+    #   - *-mainnet.*                    templates that setNetwork.sh hard-links over the live files,
+    #                                    silently reverting the package if they lag behind
+    package_files = [
+        "dappnode_package.json",
+        "dappnode_package-mainnet.json",
+    ]
+    compose_files = [
+        "docker-compose.yml",
+        "build/docker-compose.yml",
+        "build/docker-compose-mainnet.yml",
+    ]
+    package_file = package_files[0]
+
     # Read current versions
     try:
         with open(package_file, 'r') as f:
@@ -203,13 +219,24 @@ def main():
     
     # Update files
     success = True
-    
-    if not update_dappnode_package(package_file, new_package_version, new_upstream_version):
-        success = False
-    
-    if not update_docker_compose(compose_file, new_package_version, new_upstream_version):
-        success = False
-    
+
+    missing = [f for f in package_files + compose_files if not os.path.exists(f)]
+    if missing:
+        print("Error: expected version-bearing files are missing:", file=sys.stderr)
+        for f in missing:
+            print(f"  {f}", file=sys.stderr)
+        sys.exit(1)
+
+    for f in package_files:
+        print(f"Updating {f}...")
+        if not update_dappnode_package(f, new_package_version, new_upstream_version):
+            success = False
+
+    for f in compose_files:
+        print(f"Updating {f}...")
+        if not update_docker_compose(f, new_package_version, new_upstream_version):
+            success = False
+
     if not success:
         print("Failed to update files", file=sys.stderr)
         sys.exit(1)
