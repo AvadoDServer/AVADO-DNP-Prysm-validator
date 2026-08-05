@@ -55,8 +55,11 @@ jobs:
             - **Upstream version**: `${{ steps.update.outputs.old_upstream }}` → `${{ steps.update.outputs.new_upstream }}`
             
             ### Files Updated
+            - `dappnode_package.json`
             - `dappnode_package-mainnet.json`
-            - `build/docker-compose-mainnet.yml`
+            - `docker-compose.yml` (published by the release action - the build arg here is what actually gets built)
+            - `build/docker-compose.yml`
+            - `build/docker-compose-mainnet.yml` (template `setNetwork.sh` hard-links over the live file)
             
             ### Release Notes
             See the upstream release notes at: https://github.com/OffchainLabs/prysm/releases/tag/${{ steps.update.outputs.new_upstream }}
