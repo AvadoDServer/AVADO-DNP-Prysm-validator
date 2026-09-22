@@ -21,7 +21,7 @@ RUN rm -Rf node_modules
 RUN yarn --production
 
 FROM --platform=linux/amd64 gcr.io/prysmaticlabs/prysm/validator:${VERSION} as validator
-FROM --platform=linux/amd64 gcr.io/prysmaticlabs/prysm/cmd/prysmctl:latest as prysmctl
+FROM --platform=linux/amd64 gcr.io/prysmaticlabs/prysm/cmd/prysmctl:${VERSION} as prysmctl
  
 FROM --platform=linux/amd64 node:18.15.0
 
