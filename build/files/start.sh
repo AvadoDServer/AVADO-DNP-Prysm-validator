@@ -76,15 +76,14 @@ exec /bin/validator \
   --${NETWORK} \
   --datadir="/root/.eth2" \
   --rpc-host="0.0.0.0" \
-  --grpc-gateway-host="0.0.0.0" \
   --monitoring-host="0.0.0.0" \
   --wallet-dir="/root/.eth2validators" \
   --web \
   --wallet-password-file=/root/.eth2validators/walletpassword.txt \
   --rpc \
-  --grpc-gateway-host="0.0.0.0" \
-  --grpc-gateway-port=7500 \
-  --grpc-gateway-corsdomain="*" \
+  --http-host="0.0.0.0" \
+  --http-port=7500 \
+  --http-cors-domain="*" \
   --accept-terms-of-use \
   --graffiti="${GRAFFITI}" \
   ${PROPOSER_SETTINGS_FILE:+--proposer-settings-file=${PROPOSER_SETTINGS_FILE}} \
