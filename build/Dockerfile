@@ -1,7 +1,7 @@
 ARG VERSION
 
 # build image for monitor & wizard
-FROM node:18.15.0 as builder
+FROM node:18.20.8-bookworm as builder
 
 # build wizard
 WORKDIR /usr/src/wizard
@@ -23,7 +23,7 @@ RUN yarn --production
 FROM --platform=linux/amd64 gcr.io/prysmaticlabs/prysm/validator:${VERSION} as validator
 FROM --platform=linux/amd64 gcr.io/prysmaticlabs/prysm/cmd/prysmctl:${VERSION} as prysmctl
  
-FROM --platform=linux/amd64 node:18.15.0
+FROM --platform=linux/amd64 node:18.20.8-bookworm
 
 RUN apt update && \
     apt install -y \
